@@ -1,47 +1,36 @@
-const music = document.getElementById('bgMusic');
-const musicBtn = document.getElementById('musicBtn');
-const assistirBtn = document.getElementById('assistirBtn');
-const video = document.getElementById('video');
-const videoBox = document.getElementById('videoContainer');
+// ================================
+// MÚSICA DE FUNDO
+// ================================
 
-let tocando = false;
+const musica = document.getElementById("bgMusic");
 
-// Música on/off
-musicBtn.onclick = ()=>{
-  if(!tocando){
-    music.play();
-    tocando = true;
-    musicBtn.textContent = '🔇 Música';
-  }else{
-    music.pause();
-    tocando = false;
-    musicBtn.textContent = '🎵 Música';
-  }
-};
-
-// Assistir
-assistirBtn.onclick = ()=>{
-  videoBox.style.display = 'block';
-  video.play();
-  if(video.requestFullscreen){
-    video.requestFullscreen();
-  }
-};
+// tentar tocar automaticamente
+window.addEventListener("load", () => {
+  musica.volume = 0.4;
+  musica.play().catch(() => {
+    // autoplay pode ser bloqueado, então toca após interação
+    document.body.addEventListener("click", () => {
+      musica.play();
+    }, { once: true });
+  });
+});
 
 // ================================
-// CONTROLE DO VÍDEO (FINAL)
+// CONTROLE DO VÍDEO
 // ================================
 
 const assistirBtn = document.getElementById("assistirBtn");
 const videoContainer = document.getElementById("videoContainer");
 const video = document.getElementById("video");
 
-// Abrir vídeo ao clicar
+// Abrir vídeo
 assistirBtn.addEventListener("click", () => {
+  musica.pause(); // para música
   videoContainer.style.display = "flex";
   video.currentTime = 0;
   video.play();
 
+  // Tela cheia
   if (video.requestFullscreen) {
     video.requestFullscreen();
   } else if (video.webkitRequestFullscreen) {
@@ -49,14 +38,17 @@ assistirBtn.addEventListener("click", () => {
   }
 });
 
-// Função para fechar o vídeo
+// Função fechar vídeo
 function fecharVideo() {
   video.pause();
   video.currentTime = 0;
   videoContainer.style.display = "none";
+
+  // volta música
+  musica.play().catch(() => {});
 }
 
-// Quando o vídeo acabar
+// Quando o vídeo terminar
 video.addEventListener("ended", fecharVideo);
 
 // Quando sair do fullscreen
@@ -69,8 +61,8 @@ document.addEventListener("fullscreenchange", () => {
 // Quando trocar de aba
 document.addEventListener("visibilitychange", () => {
   if (document.hidden) {
-    fecharVideo();
+    musica.pause();
+  } else {
+    musica.play().catch(() => {});
   }
 });
-
-
