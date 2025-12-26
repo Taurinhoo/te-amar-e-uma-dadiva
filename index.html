@@ -51,44 +51,55 @@ section {
   transform: scale(1.1);
 }
 
-/* MODAL DE VÍDEO */
+/* AUDIO */
+audio {
+  display: none;
+}
+
+/* VIDEO FULLSCREEN */
 .video-modal {
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.9);
+  background: rgba(0,0,0,0.95);
   justify-content: center;
   align-items: center;
   z-index: 9999;
 }
 
 .video-container {
-  width: 90%;
-  max-width: 900px;
-  position: relative;
+  width: 100%;
+  height: 100%;
 }
 
 .video-container video {
   width: 100%;
-  border-radius: 8px;
+  height: 100%;
+  object-fit: contain;
 }
 
 .close-video {
   position: absolute;
-  top: -35px;
-  right: 0;
-  font-size: 30px;
+  top: 20px;
+  right: 30px;
+  font-size: 32px;
   cursor: pointer;
+  z-index: 10000;
 }
 </style>
 </head>
 
 <body>
 
+<!-- MÚSICA DE FUNDO -->
+<audio id="bgMusic" loop>
+  <source src="musica.mp3" type="audio/mpeg">
+</audio>
+
 <header>
   <h1>T.E (a)mar é uma dádiva</h1>
   <p>Thalysson Taurinho & Evellyn Santana — 20/04/2025</p>
-  <button onclick="openVideo()">▶ Assistir</button>
+  <button onclick="startExperience()">▶ Assistir</button>
 </header>
 
 <section>
@@ -111,33 +122,52 @@ section {
     <img src="IMG_1602.jpg">
     <img src="IMG_1598.jpg">
     <img src="IMG_2897.jpg">
-    <img src="momento1.jpg">
-    <img src="momento2.jpg">
-    <img src="momento3.jpg">
+    <img src="IMG_2878.png">
+    <img src="IMG_2888.png">
+    <img src="momento1.png">
+    <img src="momento2.png">
+    <img src="momento3.png">
   </div>
 </section>
 
+<!-- MODAL DO VÍDEO -->
 <div id="videoModal" class="video-modal">
+  <span class="close-video" onclick="closeVideo()">✕</span>
   <div class="video-container">
-    <span class="close-video" onclick="closeVideo()">✕</span>
     <video id="videoPlayer" controls>
       <source src="video.mp4" type="video/mp4">
+      Seu navegador não suporta vídeo.
     </video>
   </div>
 </div>
 
 <script>
-function openVideo() {
+function startExperience() {
+  const music = document.getElementById("bgMusic");
   const modal = document.getElementById("videoModal");
   const video = document.getElementById("videoPlayer");
+
+  // toca música (permitido por clique)
+  music.volume = 0.4;
+  music.play();
+
+  // abre vídeo
   modal.style.display = "flex";
   video.currentTime = 0;
   video.play();
+
+  // fullscreen
+  if (video.requestFullscreen) {
+    video.requestFullscreen();
+  } else if (video.webkitRequestFullscreen) {
+    video.webkitRequestFullscreen();
+  }
 }
 
 function closeVideo() {
   const modal = document.getElementById("videoModal");
   const video = document.getElementById("videoPlayer");
+
   modal.style.display = "none";
   video.pause();
 }
@@ -145,5 +175,3 @@ function closeVideo() {
 
 </body>
 </html>
-
-
